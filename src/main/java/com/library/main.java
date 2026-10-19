@@ -1,4 +1,4 @@
-package com.library.model;
+package com.library;
 
 public class main {
     public static void main(String[] args) {

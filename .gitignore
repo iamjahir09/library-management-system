@@ -1,6 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
+!**/src/TestMain/**/target/
 !**/src/test/**/target/
 .kotlin
 
@@ -29,7 +29,7 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
+!**/src/TestMain/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
