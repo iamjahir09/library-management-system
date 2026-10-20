@@ -3,6 +3,7 @@ import com.library.Role;
 import com.library.dao.InMemoryUserDao;
 import com.library.dao.UserDao;
 import com.library.exception.EmailAlreadyExistsException;
+import com.library.exception.InvalidCredentialsException;
 import com.library.exception.ValidationException;
 import com.library.service.AuthService;
 
@@ -95,5 +96,34 @@ public class TestMain {
         // Test 5: naya email, ye pass hona chahiye
         User u2 = auth.signup("Priya", "priya@gmail.com", "abcdefgh");
         System.out.println(u2);
+
+        // Login Test 1: sahi password
+        try {
+            User loggedIn = auth.login("rahul@gmail.com", "12345678");
+            System.out.println("Login OK: " + loggedIn.getName());
+        } catch (InvalidCredentialsException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+
+// Login Test 2: galat password
+        try {
+            auth.login("rahul@gmail.com", "wrongpass");
+        } catch (InvalidCredentialsException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+
+// Login Test 3: email jo exist hi nahi karta
+        try {
+            auth.login("nobody@gmail.com", "12345678");
+        } catch (InvalidCredentialsException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+
+// Login Test 4: null input
+        try {
+            auth.login(null, "12345678");
+        } catch (InvalidCredentialsException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
     }
 }
