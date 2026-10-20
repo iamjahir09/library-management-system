@@ -2,8 +2,10 @@ package com.library;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.library.db.Database;
 import com.library.dao.InMemoryUserDao;
 import com.library.dao.UserDao;
+import com.library.dao.MySqlUserDao;
 import com.library.dto.LoginRequest;
 import com.library.dto.LoginResponse;
 import com.library.dto.SignupRequest;
@@ -14,20 +16,35 @@ import com.library.exception.ValidationException;
 import com.library.security.JwtService;
 import com.library.service.AuthService;
 import io.javalin.Javalin;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.UnauthorizedResponse;
 
 import java.util.Map;
 
 public class Main {
 
-    public static void main(String[] args) {
-        UserDao userDao = new InMemoryUserDao();
+    public static void main(String[] args) throws Exception {
+        Database.testConnection();
+        UserDao userDao = new MySqlUserDao(Database.getDataSource());
         AuthService authService = new AuthService(userDao);
         String secret = System.getenv().getOrDefault("JWT_SECRET", "dev-only-secret-change-me-at-least-32-chars");
         JwtService jwtService = new JwtService(secret);
 
+        if (userDao.findByEmail("admin@library.local").isEmpty()) {
+            authService.admin(
+                    "Library Admin",
+                    "admin@library.local",
+                    "Admin@12345"
+            );
+        }
+
         Javalin app = Javalin.create(config -> {
-            config.bundledPlugins.enableCors(cors -> cors.addRule(it -> it.anyHost()));
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> {
+                    it.allowHost("http://localhost:5173");
+                    it.allowCredentials = false;
+                });
+            });
             config.routes.get("/", ctx -> ctx.result("Hello World"));
 
             config.routes.exception(ValidationException.class, (e, ctx) -> {
@@ -59,6 +76,34 @@ public class Main {
                 ctx.json(new LoginResponse(token, UserResponse.from(user)));
             });
 
+            config.routes.before("/admin/*", ctx->{
+                if ("OPTIONS".equalsIgnoreCase(ctx.method().name())) {
+                    return;
+                }
+                String header = ctx.header("Authorization");
+
+                if(header == null || !header.startsWith("Bearer ")){
+                    throw new UnauthorizedResponse("Missing or invalid Authorization header");
+                }
+
+                String token = header.substring(7);
+                try{
+                    DecodedJWT jwt = jwtService.verifyToken(token);
+                    String role = jwt.getClaim("role").asString();
+                    if (!"ADMIN".equals(role)) {
+                        throw new ForbiddenResponse(
+                                "Admin access required"
+                        );
+                    }
+                    ctx.attribute("userId", jwt.getSubject());
+                    ctx.attribute("role", role);
+                }catch (JWTVerificationException e) {
+                    throw new UnauthorizedResponse(
+                            "Invalid or expired token"
+                    );
+                }
+            });
+
             config.routes.before("/me", ctx -> {
                 String header = ctx.header("Authorization");
                 if (header == null || !header.startsWith("Bearer ")) {
@@ -78,6 +123,17 @@ public class Main {
                 String userId = ctx.attribute("userId");
                 String role = ctx.attribute("role");
                 ctx.json(Map.of("id", userId, "role", role));
+            });
+
+            config.routes.get("/admin/users", ctx->{
+                var users = userDao.findAll().stream().map(UserResponse::from).toList();
+                ctx.json(users);
+            });
+
+            config.routes.get("/admin/dashboard",ctx -> {
+                int totalUsers = userDao.findAll().size();
+
+                ctx.json(Map.of("totalUsers",totalUsers));
             });
 
         }).start(7070);

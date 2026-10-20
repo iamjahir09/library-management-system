@@ -17,6 +17,33 @@ public class AuthService {
         this.userdao = userdao;
     }
 
+    public User admin(String name,String email, String password){
+        if(name == null || name.isBlank()){
+            throw new ValidationException("Name cannot be empty");
+        }
+
+        if(email == null || !email.matches(emailRegex)){
+            throw new ValidationException("Invalid email format");
+        }
+
+        if(password== null || password.length() < 8){
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+
+        if (userdao.findByEmail(email).isPresent()) {
+            throw new EmailAlreadyExistsException(
+                    "Email already registered: " + email
+            );
+        }
+
+        String hash = BCrypt.withDefaults()
+                .hashToString(12, password.toCharArray());
+
+        User admin = new User(name, email, hash, Role.ADMIN);
+
+        return userdao.save(admin);
+
+    }
     public User signup(String name,String email, String password){
 
         if(name == null || name.isBlank()){

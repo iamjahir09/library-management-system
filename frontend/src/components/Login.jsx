@@ -1,11 +1,12 @@
 import { useState } from "react";
 import "./Login.css";
 import "./Auth.css";
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -24,7 +25,15 @@ function Login() {
             return
         }
         setError('')
-        console.log('success', data)
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("role",data.user.role);
+        console.log("Token saved:", Boolean(sessionStorage.getItem("token")));
+        console.log("User role:", sessionStorage.getItem("role"));
+        if(data.user.role === "ADMIN"){
+            navigate("/admin/dashboard");
+        }else {
+            navigate("/")
+        }
     }
 
     return (

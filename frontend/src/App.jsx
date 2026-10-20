@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import AdminDashboard from "./components/AdminDashboard";
 
 const books = [
     { id: 'left-back', side: 'left', size: 'book-small', title: 'LIBER VETUS', lines: 5 },
@@ -77,6 +78,7 @@ function App() {
                     <Route path="/" element={<Navigate to="/signup" replace />} />
                     <Route path="/signup" element={<AuthPage mode="signup" />} />
                     <Route path="/login" element={<AuthPage mode="login" />} />
+                    <Route path="/admin/dashboard" element={<AdminDashboard/>} />
                     <Route path="*" element={<div className="not-found"><p className="eyebrow">ARCHIVE ENTRY NOT FOUND</p><h1>404</h1><Link to="/signup">Return to the library</Link></div>} />
                 </Routes>
             </div>
