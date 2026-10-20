@@ -2,6 +2,7 @@ import com.library.User;
 import com.library.Role;
 import com.library.dao.InMemoryUserDao;
 import com.library.dao.UserDao;
+import com.library.exception.EmailAlreadyExistsException;
 import com.library.exception.ValidationException;
 import com.library.service.AuthService;
 
@@ -50,20 +51,49 @@ public class TestMain {
 //        System.out.println(dao.findAll());
 
         AuthService auth = new AuthService(dao);
+//        try {
+//            auth.signup("","a@b.com","12345678");
+//        } catch (ValidationException e) {
+//            System.out.println("Error : "+ e.getMessage());;
+//        }
+//        try {
+//            auth.signup("Rahul","abc","12345678");
+//        } catch (ValidationException e) {
+//            System.out.println("Error : "+ e.getMessage());;
+//        }
+//        try {
+//            auth.signup("Rahul","a@b.com","123456");
+//        } catch (ValidationException e) {
+//            System.out.println("Error : "+ e.getMessage());;
+//        }
+
+        User u = auth.signup("Rahul", "rahul@gmail.com", "12345678");
+        System.out.println(u);
+        System.out.println("Hash: " + u.getPasswordHash());
+
+        // Test 2: same email dobara
         try {
-            auth.signup("","a@b.com","12345678");
-        } catch (ValidationException e) {
-            System.out.println("Error : "+ e.getMessage());;
+            auth.signup("Amit", "rahul@gmail.com", "12345678");
+        } catch (EmailAlreadyExistsException e) {
+            System.out.println("Error : " + e.getMessage());
         }
+
+        // Test 3: same email, capital letters me
         try {
-            auth.signup("Rahul","abc","12345678");
-        } catch (ValidationException e) {
-            System.out.println("Error : "+ e.getMessage());;
+            auth.signup("Amit", "RAHUL@gmail.com", "12345678");
+        } catch (EmailAlreadyExistsException e) {
+            System.out.println("Error : " + e.getMessage());
         }
+
+        // Test 4: null naam
         try {
-            auth.signup("Rahul","a@b.com","123456");
+            auth.signup(null, "a@b.com", "12345678");
         } catch (ValidationException e) {
-            System.out.println("Error : "+ e.getMessage());;
+            System.out.println("Error : " + e.getMessage());
         }
+
+        // Test 5: naya email, ye pass hona chahiye
+        User u2 = auth.signup("Priya", "priya@gmail.com", "abcdefgh");
+        System.out.println(u2);
     }
 }
