@@ -27,8 +27,23 @@ public class Main {
         JwtService jwtService = new JwtService(secret);
 
         Javalin app = Javalin.create(config -> {
-
+            config.bundledPlugins.enableCors(cors -> cors.addRule(it -> it.anyHost()));
             config.routes.get("/", ctx -> ctx.result("Hello World"));
+
+            config.routes.exception(ValidationException.class, (e, ctx) -> {
+                ctx.status(400);
+                ctx.json(Map.of("error", e.getMessage()));
+            });
+
+            config.routes.exception(EmailAlreadyExistsException.class, (e, ctx) -> {
+                ctx.status(409);
+                ctx.json(Map.of("error", e.getMessage()));
+            });
+
+            config.routes.exception(InvalidCredentialsException.class, (e, ctx) -> {
+                ctx.status(401);
+                ctx.json(Map.of("error", e.getMessage()));
+            });
 
             config.routes.post("/signup", ctx -> {
                 SignupRequest req = ctx.bodyAsClass(SignupRequest.class);

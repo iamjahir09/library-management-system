@@ -1,0 +1,38 @@
+/* Shared, angular parchment form treatment for Login and Signup. */
+.auth-form {
+    --auth-accent: #75502c;
+    --auth-ring: rgba(133, 93, 48, .2);
+    --auth-button: linear-gradient(115deg, #594027, #775b35);
+    --auth-button-shadow: rgba(39, 24, 12, .25);
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 490px;
+    margin: 0 auto;
+    padding: clamp(19px, 2.8vh, 29px) clamp(23px, 3.2vw, 34px);
+    color: #352516;
+    background: linear-gradient(135deg, rgba(239, 222, 185, .98), rgba(220, 194, 148, .98));
+    border: 1px solid #8b6638;
+    border-radius: 0;
+    box-shadow: 0 16px 35px rgba(0,0,0,.42), inset 0 0 0 4px rgba(89,59,29,.08), inset 0 0 0 5px rgba(255,239,201,.24);
+    overflow: hidden;
+    animation: formEnter .35s ease-out both;
+}
+.auth-form::before { content: ''; position: absolute; inset: 7px; border: 1px solid rgba(100,66,32,.28); pointer-events: none; z-index: -1; }
+.auth-form::after { content: '✦'; position: absolute; right: 14px; top: 8px; color: rgba(104,71,36,.28); font-size: 16px; }
+.form-heading { margin: 0 0 clamp(12px, 2vh, 19px); text-align: center; }
+.form-heading h2 { margin: 0; color: #49321c; font: 600 clamp(27px, 3.2vh, 33px)/1.05 'Cormorant Garamond', Georgia, serif; letter-spacing: .03em; }
+.form-heading p { margin: 5px 0 0; color: #765b3b; font: italic 14px 'Cormorant Garamond', Georgia, serif; }
+.input-group { margin: 0 0 clamp(9px, 1.5vh, 14px); }
+.input-group label { display: block; margin: 0 0 4px; color: #4a3521; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.input-group input { display: block; width: 100%; min-height: 43px; padding: 10px 12px; border: 1px solid #b39a72; border-radius: 0; outline: none; background: rgba(255,248,229,.76); color: #2d2015; font: 14px 'DM Sans', sans-serif; box-shadow: inset 0 1px 3px rgba(50,30,12,.08); transition: border-color .18s ease, background .18s ease, box-shadow .18s ease; }
+.input-group input::placeholder { color: #9b8565; }
+.input-group input:focus { border-color: #6b4a2b; background: #fff7e5; box-shadow: inset 3px 0 #6b4a2b; }
+.auth-button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 45px; margin-top: 6px; padding: 12px 16px; border: 1px solid #b39461; border-radius: 0; background: var(--auth-button); color: #f8ebce; font: 700 13px 'DM Sans', sans-serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; box-shadow: inset 0 0 0 2px rgba(255,236,191,.08); transition: background .18s ease, color .18s ease, transform .18s ease; }
+.auth-button:hover { background: linear-gradient(115deg, #765833, #967044); color: #fff7e4; transform: translateY(-1px); }
+.auth-button:focus-visible { outline: 2px solid #684829; outline-offset: 3px; }
+.error-message { margin: 10px 0 0; padding: 8px 10px; border-left: 3px solid #8b3025; background: rgba(255,235,219,.85); color: #81291f; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+@keyframes formEnter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-height: 720px) { .auth-form { padding-top: 13px; padding-bottom: 13px; } .form-heading { margin-bottom: 10px; } .form-heading h2 { font-size: 25px; } .input-group { margin-bottom: 8px; } .input-group input { min-height: 35px; padding-top: 7px; padding-bottom: 7px; font-size: 13px; } .auth-button { min-height: 37px; padding: 8px; } }
+@media (max-width: 420px) { .auth-form { padding-left: 18px; padding-right: 18px; } }
+@media (prefers-reduced-motion: reduce) { .auth-form, .auth-button, .input-group input { animation: none; transition: none; } }
