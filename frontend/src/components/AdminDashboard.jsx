@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
-
+import "./AdminDashboard.css";
 function AdminDashboard(){
     const [totalUsers, settotalUsers] = useState(0)
+    const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -23,6 +24,24 @@ function AdminDashboard(){
                     throw new Error(`Request failed: ${response.status}`);
                 }
 
+                const userResponse = await fetch("http://localhost:7070/admin/users",{
+                    headers :  {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                if(!userResponse.ok){
+                    throw new Error(`Users request failed: ${userResponse.status}`);
+                }
+                const userData = await userResponse.json();
+                console.log("Users API response:", userData);
+                setUsers(
+                    Array.isArray(userData)
+                        ? userData
+                        : Array.isArray(userData.users)
+                            ? userData.users
+                            : []
+                );
+
                 const data = await response.json();
                 settotalUsers(data.totalUsers);
 
@@ -36,21 +55,45 @@ function AdminDashboard(){
         }
         fetchDashboard();
     },[]);
-    return(
+    return (
         <div className="admin-dashboard">
             <h1>Admin Dashboard</h1>
 
-            {loading ? (
-                <p>Loading dashboard...</p>
-            ) : error ? (
-                <p className="error-message">{error}</p>
-            ) : (
-                <div className="dashboard-card">
-                    <h2>Total Users</h2>
-                    <p>{totalUsers}</p>
-                </div>
-            )}
+            <div className="dashboard-card">
+                <h2>Total Users</h2>
+                <p>{totalUsers}</p>
+            </div>
+
+            <div className="users-section">
+                <h2>Registered Users</h2>
+
+                {users.length === 0 ? (
+                    <p>No users found.</p>
+                ) : (
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {users.map((user) => (
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.role}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </div>
-    )
+    );
 }
 export default AdminDashboard;
