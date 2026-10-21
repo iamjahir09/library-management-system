@@ -4,15 +4,14 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.library.dao.*;
 import com.library.db.Database;
-import com.library.dto.LoginRequest;
-import com.library.dto.LoginResponse;
-import com.library.dto.SignupRequest;
-import com.library.dto.UserResponse;
+import com.library.dto.*;
 import com.library.exception.EmailAlreadyExistsException;
 import com.library.exception.InvalidCredentialsException;
 import com.library.exception.ValidationException;
+import com.library.model.BookIssue;
 import com.library.security.JwtService;
 import com.library.service.AuthService;
+import com.library.service.BookIssueService;
 import com.library.service.BookService;
 import io.javalin.Javalin;
 import io.javalin.http.ForbiddenResponse;
@@ -23,7 +22,7 @@ import com.library.dao.MySqlBookDao;
 import com.library.model.Book;
 import com.library.service.BookService;
 import java.util.Map;
-
+import com.library.dto.IssueBookRequest;
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -35,6 +34,8 @@ public class Main {
         JwtService jwtService = new JwtService(secret);
         BookDao bookDao = new MySqlBookDao(dataSource);
         BookService bookService = new BookService(bookDao);
+        BookIssueDao bookIssueDao = new MySqlBookIssueDao(dataSource);
+        BookIssueService bookIssueService = new BookIssueService(bookIssueDao,bookDao,userDao);
 
         if (userDao.findByEmail("admin@library.local").isEmpty()) {
             authService.admin(
@@ -212,7 +213,57 @@ public class Main {
 
             });
 
+            config.routes.post("/admin/book-issues", ctx -> {
+                try{
+                    IssueBookRequest req = ctx.bodyAsClass(IssueBookRequest.class);
+                    BookIssue issue = bookIssueService.bookIssue(
+                            req.getEmail(),
+                            req.getBookId(),
+                            req.getDueDate()
+                    );
+                    ctx.status(HttpStatus.CREATED);
+                    ctx.json(issue);
+                } catch (IllegalArgumentException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error",e.getMessage()));
+                }catch(IllegalStateException e){
+                   ctx.status(HttpStatus.CONFLICT);
+                   ctx.json(Map.of("error",e.getMessage()));
+                }
+            });
 
+            config.routes.post("/admin/book-issues/{id}/return", ctx -> {
+                try{
+                    long issueId = Long.parseLong(ctx.pathParam("id"));
+                    BookIssue issue = bookIssueService.returnBook(issueId);
+
+                    ctx.status(HttpStatus.OK);
+                    ctx.json(issue);
+                }catch (NumberFormatException e){
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", "Invalid issue id"));
+                }catch(IllegalArgumentException e){
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error",e.getMessage()));
+                }catch(IllegalStateException e){
+                    ctx.status(HttpStatus.CONFLICT);
+                    ctx.json(Map.of("error",e.getMessage()));
+                }
+            });
+
+            config.routes.get("/admin/book-issues", ctx -> {
+                ctx.json(bookIssueService.getAllIssues());
+            });
+
+            config.routes.get("/admin/book-issues/user", ctx -> {
+                try{
+                    String email = ctx.queryParam("email");
+                    ctx.json(bookIssueService.getIssueByEmail(email));
+                }catch (IllegalArgumentException e){
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", e.getMessage()));
+                }
+            });
         }).start(7070);
     }
 }
