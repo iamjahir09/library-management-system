@@ -1,0 +1,23 @@
+.users-page { width: 100%; max-width: 1400px; margin: 0 auto; }
+.users-subtitle { margin: 0 0 22px; color: #71839b; font-size: 13px; }
+.users-summary { display:flex; align-items:center; gap:14px; padding:18px 22px; margin-bottom:20px; background:#fff; border:1px solid #e6e1d7; border-radius:13px; }
+.users-summary-icon { width:44px; height:44px; display:grid; place-items:center; color:#b8935a; background:#fbf1dc; border-radius:11px; }
+.users-summary div { display:flex; flex-direction:column; gap:4px; }
+.users-summary div span { color:#71839b; font-size:12px; }
+.users-summary strong { color:#1b3040; font-size:25px; }
+.users-topbar { display:flex; margin-bottom:15px; }
+.users-search, .records-search { flex:1; min-width:220px; display:flex; align-items:center; gap:10px; padding:0 13px; min-height:42px; background:#fff; border:1px solid #e6e1d7; border-radius:9px; color:#71839b; }
+.users-search input, .records-search input { width:100%; min-width:0; border:0; outline:0; background:transparent; padding:10px 0; color:#293d4d; font-size:13px; }
+.users-table-panel { background:#fff; border:1px solid #e6e1d7; border-radius:13px; overflow:hidden; box-shadow:0 3px 12px rgba(23,43,58,.035); }
+.users-table-wrap { width:100%; overflow-x:auto; }
+.users-table { width:100%; min-width:720px; border-collapse:collapse; text-align:left; }
+.users-table th { padding:14px 16px; background:#faf7ef; border-bottom:1px solid #e6e1d7; color:#71839b; font-size:10px; letter-spacing:.6px; text-transform:uppercase; white-space:nowrap; }
+.users-table td { padding:13px 16px; border-bottom:1px solid #f0ece3; color:#3e5060; font-size:12px; }
+.users-table tbody tr:last-child td { border-bottom:0; }
+.users-table tbody tr:hover td { background:#fcfaf5; }
+.user-name-cell { display:flex; align-items:center; gap:10px; color:#1b3040; }
+.user-avatar { width:31px; height:31px; display:grid; place-items:center; border-radius:50%; background:#f3e5c6; color:#6f5526; font-weight:700; }
+.role-badge { display:inline-flex; padding:4px 9px; border-radius:20px; background:#e3eef8; color:#3b6fa0; font-size:10px; font-weight:700; }
+.role-badge.admin { background:#fbf1dc; color:#9a7133; }
+.users-footer { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:14px 17px; color:#71839b; font-size:11px; border-top:1px solid #f0ece3; }
+@media(max-width:600px) { .users-summary { padding:15px; } .users-table th,.users-table td { padding:11px 12px; } }
