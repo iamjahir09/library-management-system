@@ -1,15 +1,15 @@
-/* ===== Library Admin Dashboard ===== */
+/* ===== HERITAGE LIBRARY — ADMIN DASHBOARD ===== */
 
 .admin-dashboard {
-    --green: #294536;
-    --green-dark: #1c3226;
-    --gold: #b49a65;
-    --ivory: #f5f1e7;
-    --white: #fffdf7;
-    --text: #303b32;
-    --muted: #77786d;
-    --border: #ded7c7;
-    --success: #42694b;
+    --green: #7a2e2e;
+    --green-dark: #5a2020;
+    --gold: #b8935a;
+    --ivory: #f5ecd9;
+    --white: #fffaf0;
+    --text: #2b1a1a;
+    --muted: #8a7a6a;
+    --border: #e3d6bf;
+    --success: #4a7a4a;
 
     width: 100%;
     min-height: 100vh;
@@ -27,7 +27,7 @@
     box-sizing: border-box;
 }
 
-/* Page heading */
+/* ===== PAGE HEADING ===== */
 
 .admin-dashboard > h1 {
     margin: 0 0 28px;
@@ -48,7 +48,7 @@
     content: "";
 }
 
-/* Total users */
+/* ===== CARD ===== */
 
 .admin-dashboard .dashboard-card {
     width: 100%;
@@ -57,17 +57,17 @@
     margin: 0 0 28px;
     padding: 20px;
     border: 1px solid var(--border);
-    border-left: 3px solid var(--green);
-    border-radius: 2px;
+    border-top: 3px solid var(--green);
+    border-radius: 4px;
     background: var(--white);
 }
 
 .admin-dashboard .dashboard-card h2 {
     margin: 0 0 10px;
     color: var(--muted);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
@@ -80,7 +80,7 @@
     line-height: 1;
 }
 
-/* Registered users */
+/* ===== USERS SECTION ===== */
 
 .admin-dashboard .users-section {
     width: 100%;
@@ -88,19 +88,21 @@
     padding: 22px;
     overflow-x: auto;
     border: 1px solid var(--border);
-    border-radius: 2px;
+    border-radius: 4px;
     background: var(--white);
 }
 
 .admin-dashboard .users-section > h2 {
     margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
     color: var(--green-dark);
     font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 700;
 }
 
-/* Users table */
+/* ===== TABLE ===== */
 
 .admin-dashboard .users-section table {
     width: 100%;
@@ -110,18 +112,18 @@
 }
 
 .admin-dashboard .users-section th {
-    padding: 13px 14px;
+    padding: 12px 14px;
     border-bottom: 2px solid var(--gold);
     background: var(--green);
-    color: #fffdf5;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    color: var(--ivory);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
 .admin-dashboard .users-section td {
-    padding: 14px;
+    padding: 13px 14px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
     font-size: 13px;
@@ -134,7 +136,7 @@
 }
 
 .admin-dashboard .users-section tbody tr:hover td {
-    background: #f3f0e6;
+    background: var(--hover-bg, #f2e8d5);
 }
 
 .admin-dashboard .users-section td:first-child {
@@ -155,9 +157,10 @@
     color: var(--success);
     font-size: 11px;
     font-weight: 700;
+    letter-spacing: 0.03em;
 }
 
-/* Loading and empty states */
+/* ===== STATES ===== */
 
 .admin-dashboard > p {
     color: var(--muted);
@@ -174,7 +177,7 @@
     text-align: center;
 }
 
-/* Error message */
+/* ===== ERROR ===== */
 
 .admin-dashboard .error-message {
     width: fit-content;
@@ -183,25 +186,25 @@
     padding: 10px 13px;
     border: 1px solid #dfc3b9;
     border-left: 3px solid #a54a3e;
-    border-radius: 2px;
+    border-radius: 3px;
     background: #fff2ed;
     color: #8c332a;
     font-size: 12px;
     overflow-wrap: anywhere;
 }
 
-/* ===== Simple Night Mode ===== */
+/* ===== NIGHT MODE ===== */
 
 .app-root[data-theme="dark"] .admin-dashboard {
-    --green: #344d3b;
-    --green-dark: #e8e2d3;
-    --ivory: #18231c;
-    --white: #202c23;
-    --text: #e2e2d7;
-    --muted: #b1b5a8;
-    --border: #39473b;
-    --success: #b6d4ae;
-    --gold: #b49a65;
+    --green: #964040;
+    --green-dark: #e0b48a;
+    --ivory: #2a1515;
+    --white: #3a1f1f;
+    --text: #f5ecd9;
+    --muted: #c9b9a0;
+    --border: #4d2a2a;
+    --success: #8fbf8f;
+    --gold: #b8935a;
 
     background: var(--ivory);
     color: var(--text);
@@ -216,11 +219,10 @@
 .app-root[data-theme="dark"] .admin-dashboard .users-section {
     border-color: var(--border);
     background: var(--white);
-    box-shadow: none;
 }
 
 .app-root[data-theme="dark"] .admin-dashboard .dashboard-card {
-    border-left: 3px solid var(--gold);
+    border-top: 3px solid var(--gold);
 }
 
 .app-root[data-theme="dark"] .admin-dashboard .dashboard-card p,
@@ -229,9 +231,13 @@
     color: var(--green-dark);
 }
 
+.app-root[data-theme="dark"] .admin-dashboard .users-section > h2 {
+    border-color: var(--border);
+}
+
 .app-root[data-theme="dark"] .admin-dashboard .users-section th {
     background: var(--green);
-    color: #fffdf5;
+    color: var(--ivory);
 }
 
 .app-root[data-theme="dark"] .admin-dashboard .users-section td {
@@ -241,7 +247,7 @@
 }
 
 .app-root[data-theme="dark"] .admin-dashboard .users-section tbody tr:hover td {
-    background: #29372c;
+    background: #4a2626;
 }
 
 .app-root[data-theme="dark"] .admin-dashboard .users-section td:first-child,
@@ -265,7 +271,7 @@
     color: #ffc3b4;
 }
 
-/* Mobile responsive */
+/* ===== MOBILE ===== */
 
 @media (max-width: 600px) {
     .admin-dashboard {
@@ -273,7 +279,7 @@
     }
 
     .admin-dashboard > h1 {
-        font-size: 29px;
+        font-size: 28px;
     }
 
     .admin-dashboard .dashboard-card {
@@ -287,11 +293,11 @@
     }
 
     .admin-dashboard .users-section > h2 {
-        font-size: 22px;
+        font-size: 21px;
     }
 
     .admin-dashboard .users-section th,
     .admin-dashboard .users-section td {
-        padding: 12px 10px;
+        padding: 11px 10px;
     }
 }

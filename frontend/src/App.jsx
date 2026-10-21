@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
-
+import BooksManagement from "./components/BooksManagement";
 const books = [
     { id: 'left-back', side: 'left', size: 'book-small', title: 'LIBER VETUS', lines: 5 },
     { id: 'left-front', side: 'left', size: 'book-large', title: 'CODEX ARCANA', lines: 7 },
@@ -116,6 +116,10 @@ function App() {
                         <Route path="/signup" element={<AuthPage mode="signup" />} />
                         <Route path="/login" element={<AuthPage mode="login" />} />
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        <Route
+                            path="/admin/books"
+                            element={<BooksManagement />}
+                        />
 
                         <Route
                             path="*"
@@ -127,6 +131,7 @@ function App() {
                                 </div>
                             }
                         />
+
                     </Routes>
                 </div>
             </div>

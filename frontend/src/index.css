@@ -1,0 +1,5 @@
+/* Global styles App.css me hain (theme tokens + reset).
+   Is file ko khali ya minimal rakho taaki Vite ke default styles wapas na aayein. */
+:root {
+    color-scheme: light dark;
+}

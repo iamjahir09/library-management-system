@@ -1,3 +1,17 @@
-.signup-form { --auth-accent: #4f5b36; --auth-ring: rgba(79, 91, 54, .2); --auth-button: linear-gradient(115deg, #3e4a2d, #697344); --auth-button-shadow: rgba(42, 50, 28, .25); }
-.signup-form .form-heading h2 { color: #41492c; }
-.signup-form .input-group input:focus { border-color: #4f5b36; box-shadow: inset 3px 0 #4f5b36; }
+.signup-form .form-heading h2 {
+    color: #4a3320;
+}
+
+.signup-form .input-group input:focus {
+    border-color: #8a5a2e;
+    box-shadow: 0 0 0 3px rgba(138, 90, 46, 0.15);
+}
+
+.app-root[data-theme="dark"] .signup-form .form-heading h2 {
+    color: #e0c090;
+}
+
+.app-root[data-theme="dark"] .signup-form .input-group input:focus {
+    border-color: #c9a670;
+    box-shadow: 0 0 0 3px rgba(201, 166, 112, 0.18);
+}

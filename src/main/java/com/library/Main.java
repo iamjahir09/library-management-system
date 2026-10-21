@@ -2,10 +2,8 @@ package com.library;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.library.dao.*;
 import com.library.db.Database;
-import com.library.dao.InMemoryUserDao;
-import com.library.dao.UserDao;
-import com.library.dao.MySqlUserDao;
 import com.library.dto.LoginRequest;
 import com.library.dto.LoginResponse;
 import com.library.dto.SignupRequest;
@@ -15,20 +13,28 @@ import com.library.exception.InvalidCredentialsException;
 import com.library.exception.ValidationException;
 import com.library.security.JwtService;
 import com.library.service.AuthService;
+import com.library.service.BookService;
 import io.javalin.Javalin;
 import io.javalin.http.ForbiddenResponse;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.UnauthorizedResponse;
-
+import com.library.dao.BookDao;
+import com.library.dao.MySqlBookDao;
+import com.library.model.Book;
+import com.library.service.BookService;
 import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
         Database.testConnection();
-        UserDao userDao = new MySqlUserDao(Database.getDataSource());
+        var dataSource = Database.getDataSource();
+        UserDao userDao = new MySqlUserDao(dataSource);
         AuthService authService = new AuthService(userDao);
         String secret = System.getenv().getOrDefault("JWT_SECRET", "dev-only-secret-change-me-at-least-32-chars");
         JwtService jwtService = new JwtService(secret);
+        BookDao bookDao = new MySqlBookDao(dataSource);
+        BookService bookService = new BookService(bookDao);
 
         if (userDao.findByEmail("admin@library.local").isEmpty()) {
             authService.admin(
@@ -135,6 +141,77 @@ public class Main {
 
                 ctx.json(Map.of("totalUsers",totalUsers));
             });
+
+            config.routes.get("/books",ctx -> {
+                ctx.json(bookService.getAllBooks());
+            });
+
+            config.routes.get("/books/{id}",ctx -> {
+                try{
+                    long id = Long.parseLong(ctx.pathParam("id"));
+
+                    var books = bookService.getBookById(id);
+                    if(books.isPresent()){
+                        ctx.json(books.get());
+                    }else{
+                        ctx.status(HttpStatus.NOT_FOUND);
+                        ctx.json(Map.of("error", "Book not found"));
+                    }
+                }catch (NumberFormatException e){
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", "Invalid book ID"));
+                }
+            });
+
+            config.routes.post("/admin/books",ctx -> {
+                Book book = ctx.bodyAsClass(Book.class);
+                Book saveBook = bookService.addBook(book);
+
+                ctx.status(HttpStatus.CREATED);
+                ctx.json(saveBook);
+            });
+
+            config.routes.delete("admin/books/{id}", ctx -> {
+                try{
+                    long id = Long.parseLong(ctx.pathParam("id"));
+                    boolean deleted = bookService.deleteBook(id);
+
+                    if(deleted){
+                        ctx.status(HttpStatus.OK);
+                        ctx.json(Map.of("message", "Book deleted successfully"));
+                    }
+                    else{
+                        ctx.status(HttpStatus.NOT_FOUND);
+                        ctx.json(Map.of("error", "Book not found"));
+                    }
+                }catch(NumberFormatException e){
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", "Invalid book ID"));
+                }
+            });
+
+            config.routes.put("admin/books/{id}", ctx -> {
+                try{
+                    long id = Long.parseLong(ctx.pathParam("id"));
+                    Book book = ctx.bodyAsClass(Book.class);
+
+                    boolean updated = bookService.updateBook(id,book);
+
+                    if(updated){
+                        ctx.status(HttpStatus.OK);
+                        ctx.json(Map.of("message", "Book updated successfully"));
+                    }
+                    else{
+                        ctx.status(HttpStatus.NOT_FOUND);
+                        ctx.json(Map.of("error","Book not found"));
+                    }
+                } catch (NumberFormatException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", "Invalid book ID"));
+                }
+
+            });
+
 
         }).start(7070);
     }

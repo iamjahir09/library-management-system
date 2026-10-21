@@ -1,3 +1,17 @@
-.login-form { --auth-accent: #604327; --auth-ring: rgba(96, 67, 39, .2); --auth-button: linear-gradient(115deg, #4b3523, #82613a); --auth-button-shadow: rgba(54, 34, 17, .25); }
-.login-form .form-heading h2 { color: #49321c; }
-.login-form .input-group input:focus { border-color: #604327; box-shadow: inset 3px 0 #604327; }
+.login-form .form-heading h2 {
+    color: #5a2020;
+}
+
+.login-form .input-group input:focus {
+    border-color: #7a2e2e;
+    box-shadow: 0 0 0 3px rgba(122, 46, 46, 0.15);
+}
+
+.app-root[data-theme="dark"] .login-form .form-heading h2 {
+    color: #e0b48a;
+}
+
+.app-root[data-theme="dark"] .login-form .input-group input:focus {
+    border-color: #c9a670;
+    box-shadow: 0 0 0 3px rgba(201, 166, 112, 0.18);
+}
