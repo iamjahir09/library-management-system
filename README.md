@@ -185,10 +185,6 @@ Potential enhancements include automated tests, deployment
 configuration, overdue notifications, fine calculation, and reporting
 exports.
 
-## Author
-
-**Jahir Shaikh**
-
 ------------------------------------------------------------------------
 
 If you encounter setup issues, verify that MySQL is running, the backend
