@@ -1,0 +1,81 @@
+
+.user-quote {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 42px;
+    margin: 20px 0 28px;
+    border: 1px solid rgba(164, 119, 48, 0.18);
+    border-radius: 14px;
+    background: linear-gradient(
+            115deg,
+            #faf5e8 0%,
+            #f5ecd4 58%,
+            #efe2c1 100%
+    );
+    box-shadow: 0 5px 18px rgba(49, 39, 20, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-quote::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(
+            to bottom,
+            #c18b3c,
+            #e1c78e
+    );
+}
+
+.user-quote-label {
+    margin: 0 0 16px;
+    color: #a56c24;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+}
+
+.user-quote-text {
+    margin: 0;
+    max-width: 1000px;
+    color: #123451;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(23px, 2.5vw, 36px);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.6px;
+}
+
+.user-quote-author {
+    margin: 15px 0 0;
+    color: #6682ad;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .user-quote {
+        padding: 24px 24px 25px 28px;
+        margin: 16px 0 22px;
+        border-radius: 12px;
+    }
+
+    .user-quote-label {
+        font-size: 10px;
+        letter-spacing: 1.6px;
+    }
+
+    .user-quote-text {
+        font-size: 24px;
+        letter-spacing: -0.3px;
+    }
+
+    .user-quote-author {
+        font-size: 14px;
+    }
+}
