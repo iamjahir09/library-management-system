@@ -20,6 +20,7 @@ import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.UnauthorizedResponse;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public class Main {
@@ -339,6 +340,167 @@ public class Main {
                 } catch (IllegalArgumentException e) {
                     ctx.status(HttpStatus.BAD_REQUEST);
                     ctx.json(Map.of("error", e.getMessage()));
+                }
+            });
+
+
+            config.routes.before("/member/*", ctx -> {
+                if ("OPTIONS".equalsIgnoreCase(ctx.method().name())) {
+                    return;
+                }
+
+                String header = ctx.header("Authorization");
+
+                if (header == null || !header.startsWith("Bearer ")) {
+                    throw new UnauthorizedResponse(
+                            "Missing or invalid Authorization header"
+                    );
+                }
+
+                try {
+                    String token = header.substring(7);
+                    DecodedJWT jwt = jwtService.verifyToken(token);
+
+                    String role = jwt.getClaim("role").asString();
+
+                    if (!"MEMBER".equals(role)) {
+                        throw new ForbiddenResponse(
+                                "Member access required. Token role: " + role
+                        );
+                    }
+
+                    String subject = jwt.getSubject();
+
+                    if (subject == null || subject.isBlank()) {
+                        throw new UnauthorizedResponse(
+                                "User ID is missing from token"
+                        );
+                    }
+
+                    int userId = Integer.parseInt(subject);
+
+                    // Set user ID for all authenticated member endpoints.
+                    ctx.attribute("userId", userId);
+                    ctx.attribute("role", role);
+
+                    System.out.println(
+                            "Authenticated member: userId=" + userId
+                                    + ", role=" + role
+                    );
+
+                } catch (JWTVerificationException e) {
+                    throw new UnauthorizedResponse("Invalid or expired token");
+                } catch (NumberFormatException e) {
+                    throw new UnauthorizedResponse("Invalid user ID in token");
+                }
+            });
+
+
+            config.routes.post("/member/books/{id}/borrow", ctx -> {
+                try {
+                    long bookId = Long.parseLong(ctx.pathParam("id"));
+
+                    // Read the user ID set by member authentication.
+                    Integer userId = ctx.attribute("userId");
+
+                    if (userId == null) {
+                        throw new UnauthorizedResponse(
+                                "User is not authenticated. Please log in again."
+                        );
+                    }
+                    LocalDate issueDate = LocalDate.now();
+                    LocalDate dueDate = issueDate.plusDays(15);
+                    BookIssue issue = bookIssueService.bookIssueForMember(
+                            userId, bookId, dueDate
+                    );
+
+                    ctx.status(HttpStatus.CREATED);
+                    ctx.json(Map.of(
+                            "message", "Book borrowed successfully",
+                            "issue", issue
+                    ));
+
+                } catch (NumberFormatException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", "Invalid book ID"));
+
+                } catch (IllegalArgumentException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("error", e.getMessage()));
+
+                } catch (IllegalStateException e) {
+                    ctx.status(HttpStatus.CONFLICT);
+                    ctx.json(Map.of("error", e.getMessage()));
+                }
+            });
+
+
+// Fetch only the logged-in member's borrowing records.
+            config.routes.get("/member/book-issues", ctx -> {
+                int userId = ctx.attribute("userId");
+
+                var user = userDao.findById(userId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("User not found."));
+
+                ctx.json(bookIssueService.getIssueByEmail(user.getEmail()));
+            });
+
+
+            config.routes.post("/member/book-issues/{id}/return", ctx -> {
+                try {
+                    Integer userId = ctx.attribute("userId");
+
+                    if (userId == null) {
+                        throw new UnauthorizedResponse(
+                                "Please log in again."
+                        );
+                    }
+
+                    long issueId = Long.parseLong(ctx.pathParam("id"));
+
+                    User user = userDao.findById(userId)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("User not found.")
+                            );
+
+                    // Verify that this borrowing record belongs to this member.
+                    boolean belongsToMember =
+                            bookIssueService.getIssueByEmail(user.getEmail())
+                                    .stream()
+                                    .anyMatch(issue ->
+                                            issue.getId() != null &&
+                                                    issue.getId().longValue() == issueId
+                                    );
+
+                    if (!belongsToMember) {
+                        ctx.status(HttpStatus.NOT_FOUND);
+                        ctx.json(Map.of(
+                                "message", "Borrowing record not found for this member."
+                        ));
+                        return;
+                    }
+
+                    BookIssue returnedIssue =
+                            bookIssueService.returnBook(issueId);
+
+                    ctx.status(HttpStatus.OK);
+                    ctx.json(Map.of(
+                            "message", "Book returned successfully!",
+                            "issue", returnedIssue
+                    ));
+
+                } catch (NumberFormatException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("message", "Invalid issue ID."));
+
+                } catch (IllegalArgumentException e) {
+                    ctx.status(HttpStatus.BAD_REQUEST);
+                    ctx.json(Map.of("message", e.getMessage()));
+
+                } catch (IllegalStateException e) {
+                    ctx.status(HttpStatus.CONFLICT);
+                    ctx.json(Map.of("message", e.getMessage()));
                 }
             });
 

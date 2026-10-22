@@ -381,3 +381,70 @@
         padding: 16px;
     }
 }
+
+.my-books-return-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #c5a46d;
+    border-radius: 8px;
+    background: #17324d;
+    color: #fff8e9;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.my-books-return-button:hover:not(:disabled) {
+    background: #244967;
+    transform: translateY(-1px);
+}
+
+.my-books-return-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.my-books-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.my-books-panel-heading > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 13px;
+    border: 1px solid #d8c8aa;
+    border-radius: 8px;
+    background: #fffaf0;
+    color: #17324d;
+    cursor: pointer;
+}
+
+.my-books-panel-heading > button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 700px) {
+    .my-books-panel-heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .my-books-table {
+        min-width: 850px;
+    }
+
+    .my-books-table-wrap {
+        overflow-x: auto;
+    }
+}

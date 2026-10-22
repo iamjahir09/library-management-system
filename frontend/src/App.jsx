@@ -1,6 +1,7 @@
 
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import "./App.css";
+import "./Polish.css";
 
 import AdminLayout from "./components/Admin/AdminLayout";
 import AdminDashboard from "./components/Admin/AdminDashboard";
@@ -18,21 +19,21 @@ import MyProfile from "./components/User/MyProfile";
 
 function ProtectedAdminRoute() {
     const token = sessionStorage.getItem("token");
-    const role = sessionStorage.getItem("role");
+    const role = (sessionStorage.getItem("role") || "").trim().toUpperCase();
 
     if (!token) {
         return <Navigate to="/login" replace />;
     }
 
     if (role !== "ADMIN") {
-        return <Navigate to={role === "USER" ? "/user" : "/login"} replace />;
+        return <Navigate to={role === "MEMBER" ? "/user" : "/login"} replace />;
     }
 
     return <Outlet />;
 }
 function ProtectedUserRoute() {
     const token = sessionStorage.getItem("token");
-    const role = sessionStorage.getItem("role" || "").trim().toUpperCase();
+    const role = (sessionStorage.getItem("role") || "").trim().toUpperCase();
 
     if (!token) {
         return <Navigate to="/login" replace />;

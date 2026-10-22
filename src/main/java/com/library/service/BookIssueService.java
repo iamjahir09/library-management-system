@@ -92,4 +92,9 @@ public class BookIssueService {
         User user = userDao.findByEmail(email.trim()).orElseThrow(()-> new IllegalArgumentException("User not found."));
         return bookIssueDao.findByUserId(user.getId());
     }
+
+    public BookIssue bookIssueForMember(int user_id ,long book_id ,LocalDate dueDate){
+        User user = userDao.findById(user_id).orElseThrow(()->new IllegalArgumentException("User not found."));
+        return bookIssue(user.getEmail(), book_id, dueDate);
+    }
 }
