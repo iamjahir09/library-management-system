@@ -91,11 +91,11 @@ Install the following before running the project:
 ### 1. Clone the repository
 
 ``` bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/iamjahir09/library-management-system.git
 cd library-management-system
 ```
 
-Replace `<YOUR_REPOSITORY_URL>` with your GitHub repository URL.
+Replace `https://github.com/iamjahir09/library-management-system.git` with your GitHub repository URL.
 
 ### 2. Configure the database
 
